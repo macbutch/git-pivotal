@@ -17,12 +17,19 @@ module Commands
     
     def run!
       super
-    
-      put "Retrieving latest #{plural_type} from Pivotal Tracker..."
-      api = Pivotal::Api.new(:api_token => options[:api_token])
 
+      msg = "Retrieving latest #{plural_type} from Pivotal Tracker"
+      if options[:only_mine] != nil
+        msg += " for #{options[:full_name]}"
+      end
+      put "#{msg}..."
+      
+      conditions = { :story_type => type, :current_state => :unstarted }
+      conditions[:owned_by] = options[:full_name] unless options[:only_mine] == nil 
+
+      api = Pivotal::Api.new(:api_token => options[:api_token])
       project = api.projects.find(:id => options[:project_id])
-      story = project.stories.find(:conditions => { :story_type => type, :current_state => :unstarted }, :limit => 1).first
+      story = project.stories.find(:conditions => conditions, :limit => 1).first
     
       unless story
         put "No #{plural_type} available!"

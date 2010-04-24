@@ -38,13 +38,15 @@ module Commands
   private
 
     def parse_gitconfig
-      token = get("git config --get pivotal.api-token").strip
-      id    = get("git config --get pivotal.project-id").strip
-      name  = get("git config --get pivotal.full-name").strip
+      token     = get("git config --get pivotal.api-token").strip
+      id        = get("git config --get pivotal.project-id").strip
+      name      = get("git config --get pivotal.full-name").strip
+      only_mine = get("git config --get pivotal.only-mine").strip
 
       options[:api_token] = token unless token == ""
       options[:project_id] = id unless id == ""
       options[:full_name] = name unless name == ""
+      options[:only_mine] = only_mine unless name == ""
     end
 
     def parse_argv(*args)
